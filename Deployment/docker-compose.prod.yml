@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: company_manager
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  api:
+    image: ghcr.io/${GHCR_OWNER}/company-manager-api:latest
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      UsePostgres: "true"
+      ConnectionStrings__Postgres: Host=db;Database=company_manager;Username=app;Password=${POSTGRES_PASSWORD}
+      Auth__Jwt__Issuer: "companymanager"
+      Auth__Jwt__Audience: "companymanager"
+      Auth__Jwt__Key: ${JWT_KEY}
+      AllowSelfSignup: "true"
+    depends_on: [db]
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  web:
+    image: ghcr.io/${GHCR_OWNER}/company-manager-web:latest
+    environment:
+      NITRO_PORT: 3000
+      # If your server runs both containers, the API hostname is "api" via compose network:
+      NUXT_PUBLIC_API_BASE: http://api:8080
+    depends_on: [api]
+    ports:
+      - "80:3000"   # serve the Nuxt app on port 80 (HTTP)
+    restart: unless-stopped
+
+volumes:
+  db-data:
