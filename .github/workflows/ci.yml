@@ -42,6 +42,6 @@ jobs:
       - name: Build image (no push)
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./FrontEnd
           file: FrontEnd/Dockerfile
           push: false
