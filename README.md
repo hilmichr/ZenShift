@@ -2,7 +2,7 @@
 
 A progressive web application for employee and company management, built with Nuxt 3 (frontend) and ASP.NET Core + Entity Framework (backend).
 
-Features
+## Features
 
 🔐 Authentication & Roles: Secure login/registration with JWT, role-based access (Admin / Employee).
 
@@ -26,11 +26,12 @@ Auth: JWT access + refresh tokens, role-based (Admin, Employee), password hashin
 
 ### BackEnd
 
+```bash
 cd backend
 dotnet restore
 dotnet ef database update
 dotnet run
-
+```
 ### frontEnd
 
 Make sure to install the dependencies:
