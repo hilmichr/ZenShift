@@ -1,0 +1,46 @@
+name: CI
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node: build Nuxt to catch code errors
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        working-directory: FrontEnd
+        run: npm ci
+
+      - name: Lint (optional if you have eslint script)
+        working-directory: FrontEnd
+        run: |
+          if npm run | grep -q "lint"; then npm run lint; else echo "no lint script"; fi
+
+      - name: Unit tests (optional if you add Vitest later)
+        working-directory: FrontEnd
+        run: |
+          if npm run | grep -q "test"; then npm test; else echo "no tests"; fi
+
+      - name: Build FrontEnd
+        working-directory: FrontEnd
+        run: npm run build
+
+      # Sanity: can the Dockerfile build? (no push)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./FrontEnd
+          file: FrontEnd/Dockerfile
+          push: false
