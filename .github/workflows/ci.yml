@@ -38,23 +38,27 @@ jobs:
         working-directory: FrontEnd
         run: npm run build
 
+      # --- Docker sanity build (and load into local engine) ---
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build image (no push)
+      - name: Build image (no push, load to local)
         uses: docker/build-push-action@v6
         with:
           context: ./FrontEnd
           file: ./FrontEnd/Dockerfile
           push: false
+          load: true                    # <= important: makes image available to 'docker images'
+          tags: frontend-ci:local       # <= tag used by Trivy below
 
-      - name: Trivy scan (filesystem & deps)
+      # --- Security scans ---
+      - name: Trivy scan (filesystem)
         uses: aquasecurity/trivy-action@0.24.0
         with:
           scan-type: 'fs'
           scan-ref: 'FrontEnd'
           format: 'table'
-          exit-code: '0'           # don't fail CI on first pass; change to '1' later
+          exit-code: '0'                # set to '1' later to fail on vulns
           severity: 'CRITICAL,HIGH'
 
       - name: Trivy scan (image)
@@ -62,17 +66,8 @@ jobs:
         with:
           image-ref: 'frontend-ci:local'
           format: 'table'
-          exit-code: '0'
+          exit-code: '0'                # set to '1' later to enforce
           severity: 'CRITICAL,HIGH'
-        env:
-          # load the just-built image into the local Docker daemon
-          TRIVY_NON_SSL: 'true'
-        # buildx kept image in cache; re-build into Docker engine to scan
-        # (cheap since layers are cached)
-        shell: bash
-        run: |
-          docker build -t frontend-ci:local -f FrontEnd/Dockerfile FrontEnd
-          echo "scanning image…"
 
       - name: NPM Audit (high+)
         working-directory: FrontEnd
