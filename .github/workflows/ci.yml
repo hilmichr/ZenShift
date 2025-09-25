@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: FrontEnd/package-lock.json
 
       - name: Install deps
         working-directory: FrontEnd
@@ -41,6 +42,6 @@ jobs:
       - name: Build image (no push)
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./FrontEnd
           file: FrontEnd/Dockerfile
           push: false

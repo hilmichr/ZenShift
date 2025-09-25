@@ -7,13 +7,24 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "start": "node .output/server/index.mjs",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --coverage",
+    "audit": "npm audit --audit-level=high || true"
   },
   "devDependencies": {
     "@nuxt/devtools": "^2.6.5",
     "nuxt": "^3.8.1",
     "vue": "^3.3.8",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "typescript": "^5",
+    "vitest": "^2",
+    "@types/node": "^20",
+    "eslint": "^9",
+    "@typescript-eslint/eslint-plugin": "^8",
+    "@typescript-eslint/parser": "^8"
   },
   "dependencies": {
     "@iconify-json/carbon": "^1.1.21",
