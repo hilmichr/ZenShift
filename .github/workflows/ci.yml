@@ -43,5 +43,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./FrontEnd
+          context: ./FrontEnd
           file: FrontEnd/Dockerfile
           push: false
