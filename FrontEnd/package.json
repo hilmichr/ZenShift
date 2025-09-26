@@ -27,7 +27,7 @@
     "@typescript-eslint/parser": "^8.8.1",
     "@typescript-eslint/eslint-plugin": "^8.8.1",
     "eslint-plugin-vue": "^9.28.0",
-    "vue-eslint-parser": "^9.4.3",
+    "vue-eslint-parser": "^9.4.3"
   },
   "dependencies": {
     "@iconify-json/carbon": "^1.1.21",
